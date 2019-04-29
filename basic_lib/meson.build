@@ -12,21 +12,10 @@ configure_file(input: './meson_config.h.in',
 
 inc = include_directories('.', './include')
 
-subdir('./src')
-
-src = [sum_range, mult_range, dot, abs]
-
 if get_option('shared_lib') == true
    libtype = 'shared_library'
 else
    libtype = 'static_library'
 endif
 
-libbasic = build_target('basic',
-                        src,
-	            	name_prefix: 'lib',
-		    	name_suffix: [],
-		    	cpp_args: ['-O2', '-Wall'],
-			include_directories: inc,
-			target_type: libtype,
-			install: true)
+subdir('./src')
