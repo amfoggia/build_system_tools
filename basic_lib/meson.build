@@ -1,6 +1,6 @@
 project('libbasic', 'cpp', default_options: ['cpp_std=c++17'], version: ['0.1.0'])
 
-add_project_arguments(language: 'cpp')
+add_project_arguments('-Dlibdir=lib', language: 'cpp')
 
 conf_data = configuration_data()
 conf_data.set_quoted('version', meson.project_version())
@@ -18,4 +18,5 @@ else
    libtype = 'static_library'
 endif
 
+subdir('./include')
 subdir('./src')

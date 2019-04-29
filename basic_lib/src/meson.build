@@ -7,9 +7,15 @@ src = [sum_range, mult_range, dot, abs]
 
 libbasic = build_target('basic',
                         src,
-	            	name_prefix: 'lib',
 		    	name_suffix: [],
 		    	cpp_args: ['-O2', '-Wall'],
 			include_directories: inc,
 			target_type: libtype,
 			install: true)
+
+pkg_mod = import('pkgconfig')
+pkg_mod.generate(libraries: libbasic,
+                 version: '0.1.0',
+                 name: 'libbasic',
+                 filebase: 'basic',
+                 description: 'Library for very basic math.')
