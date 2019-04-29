@@ -16,6 +16,6 @@ libbasic = build_target('basic',
 pkg_mod = import('pkgconfig')
 pkg_mod.generate(libraries: libbasic,
                  version: '0.1.0',
-                 name: 'libbasic',
+                 name: 'basic',
                  filebase: 'basic',
                  description: 'Library for very basic math.')
