@@ -1,5 +1,5 @@
-#ifndef __SUM_H
-#define __SUM_H
+#ifndef __SUM_RANGE_H
+#define __SUM_RANGE_H
 
 #include <stdexcept>
 #include <vector>

@@ -1,5 +1,5 @@
-#ifndef __MULT_H
-#define __MULT_H
+#ifndef __MULT_RANGE_H
+#define __MULT_RANGE_H
 
 #include <stdexcept>
 #include <vector>

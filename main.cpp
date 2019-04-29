@@ -1,7 +1,7 @@
 #include <iostream>
-#include "my_lib/include/sum.hpp"
-#include "my_lib/include/mult.hpp"
-#include "my_lib/include/abs.hpp"
+#include "sum_range.hpp"
+#include "mult_range.hpp"
+#include "abs.hpp"
 
 int main(int argc, char * argv[]) {
 
