@@ -109,4 +109,5 @@ Requires.private: basic
 Libs: -L${libdir} -lcool
 Cflags: -I${includedir} -O3 -Wall
 ```
-What we see here is that `meson` put the `libbasic` library in the private part of the "requires", and this is done by the fact that we declared this library as one of the `dependencies` of `libcool`, and by default, `meson` takes it as private unless stated differently.
+
+What we see here is that `meson` puts the `libbasic` library in the private part of the "requires", and this is done because we declared this library as one of the `dependencies` of `libcool`, and by default, `meson` takes it as private unless stated differently. This makes sense and is in line with what the `requires` is for: to state packages that have a `.cp`file. 
