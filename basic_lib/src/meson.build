@@ -8,7 +8,7 @@ src = [sum_range, mult_range, dot, abs]
 libbasic = build_target('basic',
                         src,
 		    	name_suffix: [],
-		    	cpp_args: ['-O2', '-Wall'],
+		    	cpp_args: ['-O3', '-Wall'],
 			include_directories: inc,
 			target_type: libtype,
 			install: true)
