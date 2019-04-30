@@ -9,19 +9,18 @@ In simple words, it is a way to provide necessary details for compiling and link
 #### `pkg-config` files
 These files have file extension `.pc` and have two types of statements: metadata keywords and freeform variables. 
 
-There are little number of keywords. Let's take a particular example to illustrate the possible "values" these keywords may have:
+There are little number of keywords:
 
- 1. **Name:** `PETSc`
- 2. **Description:** `Library to solve ODEs and algebraic equations`
- 3. **URL:** `https://www.mcs.anl.gov/petsc/`
- 4. **Version:** `3.11.0`
- 5. **Requires**
- 6. **Requires.private**
+ 1. **Name:** `Name of library and the .pc file`
+ 2. **Description:** `What does the library do?`
+ 3. **URL:** 
+ 4. **Version:** 
+ 5. **Requires** `List of packages that also have a pkg-config file, that are required by this library`
+ 6. **Requires.private** `List of packages that also have a pkg-config file, that are required by this library BUT ARE NOT EXPOSED TO APPLICATIONS`
  7. **Conflicts**
- 8. **Cflags:** `-I${includedir}`
- 9. **Libs:** `-L${libdir} -lpetsc`
- 10. **Libs.private:** `-L/opt/lib/intel/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64 
--L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/lib/x86_64-linux-gnu -lm -lX11 -lpthread -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core -lpthread -ldl -lstdc++ -lmpichfort -lmpich -lgfortran -lm -lgfortran -lm -lgcc_s -lquadmath -lstdc++ -ldl`
+ 8. **Cflags:** `Compilig flags`
+ 9. **Libs:** `Application and linking flags of required packages that do not have a .pc file`
+ 10. **Libs.private:** `Application and linking flags of required packages that do not have a .pc file AND ARE NOT EXPOSED TO APPLICATIONS`
 
 The most important keywords are **Requires**, **Requires.private**, **Cflags**, **Libs** and **Libs.private**. What does *private* mean in here? If the application you are compiling depends on some library that internally depends on some other library, you don't need to link directly against the later one.
 
@@ -39,3 +38,75 @@ There are only a few commands to use with `pkg-config` and they can be seen with
 ```
 c++ `pkg-config --cflags --libs PETSc` main.cpp -o main.x
 ```
+
+## Example
+
+In the repo there is an very simple example of two libraries: `libbasic` and `libcool`. This example has two goals: use `pkg-config` files and learn how to create them with `meson` or manually. 
+
+The example is organized in the following way:
+
+├── basic_lib
+│   ├── include
+│   │   ├── abs.hpp
+│   │   ├── dot.hpp
+│   │   ├── meson.build
+│   │   ├── mult_range.hpp
+│   │   └── sum_range.hpp
+│   ├── meson.build
+│   ├── meson_config.h.in
+│   ├── meson_options.txt
+│   └── src
+│       ├── abs.cpp
+│       ├── dot.cpp
+│       ├── meson.build
+│       ├── mult_range.cpp
+│       └── sum_range.cpp
+├── cool_lib
+│   ├── include
+│   │   ├── meson.build
+│   │   ├── strange_mult.hpp
+│   │   └── strange_sum.hpp
+│   ├── meson
+│   ├── meson.build
+│   ├── meson_config.h.in
+│   ├── meson_options.txt
+│   └── src
+│       ├── meson.build
+│       ├── strange_mult.cpp
+│       └── strange_sum.cpp
+├── main.cpp
+
+Library `libcool` depends on `libbasic` (is "built on top of it"), but the `main.cpp` function does not depend directly on `libbasic`. This way, when using shared libraries, we do not need to explicitly link the main function to the `libbasic` library, we only need the `libcool` library.
+
+For both libraries, we generate with `meson` the pkg-config file, and they go like:
+
+1. `pkg-config` of `libbasic`
+```
+prefix=<some/path>
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: basic
+Description: Library for very basic math.
+Version: 0.1.0
+Libs: -L${libdir} -lbasic
+Cflags: -I${includedir}
+```
+
+2. `pkg-config` of `libcool`
+```
+prefix=<some/path>
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+other_name=my_lib
+author=someone
+
+Name: cool
+Description: Library for very cool math.
+Version: 0.1.1
+Requires.private: basic
+Libs: -L${libdir} -lcool
+Cflags: -I${includedir} -O3 -Wall
+```
+What we see here is that `meson` put the `libbasic` library in the private part of the "requires", and this is done by the fact that we declared this library as one of the `dependencies` of `libcool`, and by default, `meson` takes it as private unless stated differently.
