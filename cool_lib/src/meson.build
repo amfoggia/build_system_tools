@@ -8,12 +8,16 @@ src = [strange_sum, strange_mult, min_vec, max_vec]
 basic_dep = dependency('basic')
 
 cxx = meson.get_compiler('cpp')
-extra_dep = cxx.find_library('extra', dirs: ['/tmp/extra/lib'])
+extra_prefix = '/tmp/extra/'
+extra_dep = cxx.find_library('extra',
+			     required: true, 
+			     dirs: [extra_prefix + 'lib'],
+			     has_headers: [extra_prefix + 'include/max.hpp', extra_prefix + 'include/min.hpp'])
 
 libcool = both_libraries('cool',
 			 src,
 		    	 name_suffix: [],
-			 cpp_args: ['-O3', '-Wall'],
+			 cpp_args: ['-O3', '-Wall', '-I'+extra_prefix+'include'],
 		     	 include_directories: inc,
 		     	 dependencies: [basic_dep, extra_dep],
 		     	 install: true)
