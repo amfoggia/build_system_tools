@@ -1,8 +1,7 @@
 #include "min_vec.hpp"
 
-std::vector<int>& min_vec(std::vector<int> vec1, std::vector<int> vec2) {
+void min_vec(std::vector<int> vec1, std::vector<int> vec2, std::vector<int>& min_vec) {
 
-  std::vector<int> min_vec;
   int size = vec1.size();
   
   if (vec1.size() != vec2.size())
@@ -10,6 +9,4 @@ std::vector<int>& min_vec(std::vector<int> vec1, std::vector<int> vec2) {
 
   for (int i = 0; i < size; ++i)
     min_vec.push_back(min(vec1[i], vec2[i]));
-
-  return min_vec;
 }

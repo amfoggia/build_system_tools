@@ -1,8 +1,7 @@
 #include "max_vec.hpp"
 
-std::vector<int>& max_vec(std::vector<int> vec1, std::vector<int> vec2) {
+void max_vec(std::vector<int> vec1, std::vector<int> vec2, std::vector<int>& max_vec) {
 
-  std::vector<int> max_vec;
   int size = vec1.size();
   
   if (vec1.size() != vec2.size())
@@ -10,6 +9,4 @@ std::vector<int>& max_vec(std::vector<int> vec1, std::vector<int> vec2) {
 
   for (int i = 0; i < size; ++i)
     max_vec.push_back(max(vec1[i], vec2[i]));
-
-  return max_vec;
 }

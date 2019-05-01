@@ -5,6 +5,6 @@
 #include <vector>
 #include <stdexcept>
 
-std::vector<int>& min_vec(std::vector<int> vec1, std::vector<int> vec2);
+void min_vec(std::vector<int> vec1, std::vector<int> vec2, std::vector<int>& min_vec);
 
 #endif
