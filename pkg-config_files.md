@@ -13,14 +13,14 @@ There are little number of keywords:
 
  1. **Name:** `Name of library and the .pc file`
  2. **Description:** `What does the library do?`
- 3. **URL:** 
- 4. **Version:** 
- 5. **Requires** `List of packages that also have a pkg-config file, that are required by this library`
- 6. **Requires.private** `List of packages that also have a pkg-config file, that are required by this library BUT ARE NOT EXPOSED TO APPLICATIONS`
+ 3. **URL** 
+ 4. **Version** 
+ 5. **Requires:** `List of packages that also have a pkg-config file, that are required by this library`
+ 6. **Requires.private:** `List of packages that also have a pkg-config file, that are required by this library BUT ARE NOT EXPOSED TO APPLICATIONS`
  7. **Conflicts**
- 8. **Cflags:** `Compilig flags`
+ 8. **Cflags:** `Compiling flags`
  9. **Libs:** `Application and linking flags of required packages that do not have a .pc file`
- 10. **Libs.private:** `Application and linking flags of required packages that do not have a .pc file AND ARE NOT EXPOSED TO APPLICATIONS`
+ 10. **Libs.private** `Application and linking flags of required packages that do not have a .pc file AND ARE NOT EXPOSED TO APPLICATIONS`
 
 The most important keywords are **Requires**, **Requires.private**, **Cflags**, **Libs** and **Libs.private**. What does *private* mean in here? If the application you are compiling depends on some library that internally depends on some other library, you don't need to link directly against the later one.
 
