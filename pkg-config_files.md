@@ -116,6 +116,8 @@ root
 Library `libcool` depends on `libbasic` and on `libextra`, but the `main.cpp` function does not depend directly on the last two. This way, when using shared libraries, we do not need to explicitly link the main function to these libraries, we only need to link against the `libcool` library.
 
 Only the `libcool` and the `libbasic` libraries have a `.pc` file, the `libextra` does no. With this we can exemplify the usage of the `pkg-config` file variables.
+
+##
 For two of the libraries, we generate with `meson` the pkg-config file, and they go like:
 
 1. `pkg-config` of `libbasic`
@@ -150,10 +152,28 @@ Libs: -L${libdir} -lcool
 Libs.private: /tmp/extra/lib/libextra.so
 Cflags: -I${includedir} -O3 -Wall -I/tmp/extra/include
 ```
+
+##
 What do we observe from these files:
 1. `Libs` has the library and the path to the current library
 2. `Libs.private` has the library that does not have a `.pc` file
 3. `Requires.private` has the `libbasic` library that has a  `.pc` file and that may be only required by the current library and not by another executable --> By default, `meson` takes the `dependencies` as private unless stated differently
-4. `Cflags` has also the include directory of the `libextra` library
+4. `Cflags` has also the include directory of the `libextra` library (we had to add them MANUALLY to the `extra_cflags` keyword in the `meson` file)
 
+##
 How can we use these files to create an executable from the `main.cpp`code?
+```
+$ export PKG_CONFIG_PATH=/tmp/cool/lib/pkgconfig/:/tmp/basic/lib/pkgconfig
+$ export /tmp/extra/lib/:/tmp/othersss/basic/lib/:/tmp/othersss/cool/lib/
+$ g++ -c main.cpp `pkg-config --cflags cool` -o main.o
+$ g++ main.o `pkg-config --libs cool` -o main.x
+```
+If we wanted to link the main function against static libraries, these files are not correct. We need the static version of the `libextra` library. We should modify the `cool.pc` file like
+```
+Libs.private: -L/tmp/extra/lib/ -lextra
+```
+and now link it with
+```
+$ export /tmp/cool/lib/pkgconfig/:/tmp/static_libs/basic/lib/pkgconfig
+$ g++ main.o -static `pkg-config --libs --static cool` -o main.x
+```
