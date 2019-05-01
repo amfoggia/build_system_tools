@@ -39,9 +39,33 @@ There are only a few commands to use with `pkg-config` and they can be seen with
 c++ `pkg-config --cflags --libs PETSc` main.cpp -o main.x
 ```
 
+### Compiling Recap
+In order to produce an executable from some code there are four stages in the compilation procedure:
+1. Preprocessing
+2.  Compilation proper
+3.  Assembly
+4. Linking
+
+and there is a difference if the linking is done dynamically or statically. Just in case, let's take a brief look of this. Suppose we have two libraries, one (`libA`) depending on the other (`libB`), and there is a `main.cpp` function that only depends on `libA`.
+```
+$ g++ -c main.cpp -I{include_dirs} -o main.o --> Construct the object file
+```
+```
+$ g++ main.o -L{libA_dir} -lA -L{libB_dir} -lB -o main.x --> Static linking
+```
+```
+$ export LD_LIBRARY_PATH={libA_dir}:$LD_LIBRARY_PATH
+$ g++ main.o -L{libA_dir} -lA -o main.x --> Dynamic linking
+``` 
+And suppose the case that inside `libA_dir`and `libB_dir` there are two versions of the libraries, a static one and a shared one. In that case, the compiler will try to link with the shared one, unless we use the `-static`flag during linking.
+```
+$ g++ main.o -static -L{libA_dir} -lA -L{libB_dir} -lB -o main.x --> Static linking
+```
+
+
 ## Example
 
-In the repo there is an very simple example of two libraries: `libbasic` and `libcool`. This example has two goals: use `pkg-config` files and learn how to create them with `meson` or manually. 
+In the repo there is an very simple example of two libraries: `libbasic` and `libcool`. This example has two goals: one, use `pkg-config` files, and two, learn how to create them with `meson` (or manually). 
 
 The example is organized in the following way:
 
@@ -81,6 +105,7 @@ Library `libcool` depends on `libbasic` (is "built on top of it"), but the `main
 For both libraries, we generate with `meson` the pkg-config file, and they go like:
 
 1. `pkg-config` of `libbasic`
+The command to create the library is `build_target` and it can create either a static or a shared library according to a flag passed during configuration. 
 ```
 prefix=<some/path>
 libdir=${prefix}/lib
@@ -94,6 +119,7 @@ Cflags: -I${includedir}
 ```
 
 2. `pkg-config` of `libcool`
+The command used in this case to create the library is `both_libraries`, so it creates a static and a shared version of the library.
 ```
 prefix=<some/path>
 libdir=${prefix}/lib
@@ -109,5 +135,6 @@ Requires.private: basic
 Libs: -L${libdir} -lcool
 Cflags: -I${includedir} -O3 -Wall
 ```
+What we see here is that `meson` puts the `libbasic` library in the private part of the "requires", and this is done because we declared this library as one of the `dependencies` of `libcool`, and by default, `meson` takes it as private unless stated differently.
 
-What we see here is that `meson` puts the `libbasic` library in the private part of the "requires", and this is done because we declared this library as one of the `dependencies` of `libcool`, and by default, `meson` takes it as private unless stated differently. This makes sense and is in line with what the `requires` is for: to state packages that have a `.cp`file. 
+How can we use these files to create an executable from the `main.cpp`code?

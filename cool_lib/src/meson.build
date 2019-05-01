@@ -5,15 +5,6 @@ src = [strange_sum, strange_mult]
 
 basic_dep = dependency('basic')
 
-# libcool = build_target('cool',
-#                        src,
-# 		       name_suffix: [],
-# 		       cpp_args: ['-O3', '-Wall'],
-# 		       include_directories: inc,
-# 		       dependencies: basic_dep,
-# 		       target_type: libtype,
-# 		       install: true)
-
 libcool = both_libraries('cool',
 			 src,
 		    	 name_suffix: [],
@@ -30,4 +21,3 @@ pkg_mod.generate(libraries: libcool,
                  description: 'Library for very cool math.',
 		 extra_cflags: ['-O3', '-Wall'],
 		 variables: ['other_name=my_lib', 'author=someone'])
-		 #requires: 'basic >= 0.1')
