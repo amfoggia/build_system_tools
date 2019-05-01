@@ -65,10 +65,11 @@ $ g++ main.o -static -L{libA_dir} -lA -L{libB_dir} -lB -o main.x --> Static link
 
 ## Example
 
-In the repo there is an very simple example of two libraries: `libbasic` and `libcool`. This example has two goals: one, use `pkg-config` files, and two, learn how to create them with `meson` (or manually). 
+In the repo there is an very simple example of three libraries: `libextra`, `libbasic` and `libcool`. This example has two goals: one, use `pkg-config` files, and two, learn how to create them with `meson` (and/or manually). 
 
 The example is organized in the following way:
 
+root
 ├── basic_lib
 │   ├── include
 │   │   ├── abs.hpp
@@ -77,8 +78,8 @@ The example is organized in the following way:
 │   │   ├── mult_range.hpp
 │   │   └── sum_range.hpp
 │   ├── meson.build
-│   ├── meson_config.h.in
 │   ├── meson_options.txt
+│   ├── my_project_config.h.in
 │   └── src
 │       ├── abs.cpp
 │       ├── dot.cpp
@@ -87,27 +88,40 @@ The example is organized in the following way:
 │       └── sum_range.cpp
 ├── cool_lib
 │   ├── include
+│   │   ├── max_vec.hpp
 │   │   ├── meson.build
+│   │   ├── min_vec.hpp
 │   │   ├── strange_mult.hpp
 │   │   └── strange_sum.hpp
-│   ├── meson
 │   ├── meson.build
-│   ├── meson_config.h.in
-│   ├── meson_options.txt
 │   └── src
+│       ├── max_vec.cpp
 │       ├── meson.build
+│       ├── min_vec.cpp
 │       ├── strange_mult.cpp
 │       └── strange_sum.cpp
+├── extra_lib
+│   ├── include
+│   │   ├── max.hpp
+│   │   ├── meson.build
+│   │   └── min.hpp
+│   ├── meson.build
+│   └── src
+│       ├── max.cpp
+│       ├── meson.build
+│       └── min.cpp
 ├── main.cpp
+└── pkg-config_files.md
 
-Library `libcool` depends on `libbasic` (is "built on top of it"), but the `main.cpp` function does not depend directly on `libbasic`. This way, when using shared libraries, we do not need to explicitly link the main function to the `libbasic` library, we only need the `libcool` library.
+Library `libcool` depends on `libbasic` and on `libextra`, but the `main.cpp` function does not depend directly on the last two. This way, when using shared libraries, we do not need to explicitly link the main function to these libraries, we only need to link against the `libcool` library.
 
-For both libraries, we generate with `meson` the pkg-config file, and they go like:
+Only the `libcool` and the `libbasic` libraries have a `.pc` file, the `libextra` does no. With this we can exemplify the usage of the `pkg-config` file variables.
+For two of the libraries, we generate with `meson` the pkg-config file, and they go like:
 
 1. `pkg-config` of `libbasic`
-The command to create the library is `build_target` and it can create either a static or a shared library according to a flag passed during configuration. 
+The command to create the library is `build_target` and it can create either a static or a shared library according to a flag passed during configuration. This file is the one obtained when creating a shared library.
 ```
-prefix=<some/path>
+prefix=/tmp/basic
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
@@ -121,7 +135,7 @@ Cflags: -I${includedir}
 2. `pkg-config` of `libcool`
 The command used in this case to create the library is `both_libraries`, so it creates a static and a shared version of the library.
 ```
-prefix=<some/path>
+prefix=/tmp/cool
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
@@ -133,8 +147,13 @@ Description: Library for very cool math.
 Version: 0.1.1
 Requires.private: basic
 Libs: -L${libdir} -lcool
-Cflags: -I${includedir} -O3 -Wall
+Libs.private: /tmp/extra/lib/libextra.so
+Cflags: -I${includedir} -O3 -Wall -I/tmp/extra/include
 ```
-What we see here is that `meson` puts the `libbasic` library in the private part of the "requires", and this is done because we declared this library as one of the `dependencies` of `libcool`, and by default, `meson` takes it as private unless stated differently.
+What do we observe from these files:
+1. `Libs` has the library and the path to the current library
+2. `Libs.private` has the library that does not have a `.pc` file
+3. `Requires.private` has the `libbasic` library that has a  `.pc` file and that may be only required by the current library and not by another executable --> By default, `meson` takes the `dependencies` as private unless stated differently
+4. `Cflags` has also the include directory of the `libextra` library
 
 How can we use these files to create an executable from the `main.cpp`code?

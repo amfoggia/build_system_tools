@@ -28,5 +28,5 @@ pkg_mod.generate(libraries: libcool,
                  name: 'cool',
                  filebase: 'cool',
                  description: 'Library for very cool math.',
-		 extra_cflags: ['-O3', '-Wall'],
+		 extra_cflags: ['-O3', '-Wall', '-I'+extra_prefix+'include'],
 		 variables: ['other_name=my_lib', 'author=someone'])
