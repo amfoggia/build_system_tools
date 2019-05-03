@@ -69,6 +69,7 @@ In the repo there is an very simple example of three libraries: `libextra`, `lib
 
 The example is organized in the following way:
 
+```
 root
 
 |--basic_lib
@@ -153,7 +154,8 @@ root
 
 |-- main.cpp
 
-x|-- pkg-config_files.md
+|-- pkg-config_files.md
+```
 
 Library `libcool` depends on `libbasic` and on `libextra`, but the `main.cpp` function does not depend directly on the last two. This way, when using shared libraries, we do not need to explicitly link the main function to these libraries, we only need to link against the `libcool` library.
 
