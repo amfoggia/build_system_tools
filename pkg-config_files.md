@@ -71,89 +71,47 @@ The example is organized in the following way:
 
 ```
 root
-
 |--basic_lib
-
 |   |-- include
-
 |   |   |-- abs.hpp
-
 |   |   |-- dot.hpp
-
 |   |   |-- meson.build
-
 |   |   |-- mult_range.hpp
-
 |   |   |-- sum_range.hpp
-
 |   |-- meson.build
-
 |   |-- meson_options.txt
-
 |   |-- my_project_config.h.in
-
 |   |-- src
-
 |       |-- abs.cpp
-
 |       |-- dot.cpp
-
 |       |-- meson.build
-
 |       |-- mult_range.cpp
-
 |       |-- sum_range.cpp
-
 |-- cool_lib
-
 |   |-- include
-
 |   |   |-- max_vec.hpp
-
 |   |   |-- meson.build
-
 |   |   |-- min_vec.hpp
-
 |   |   |-- strange_mult.hpp
-
 |   |   |-- strange_sum.hpp
-
 |   |-- meson.build
-
 |   |-- src
-
 |       |-- max_vec.cpp
-
 |       |-- meson.build
-
 |       |-- min_vec.cpp
-
 |       |-- strange_mult.cpp
-
 |       |-- strange_sum.cpp
-
 |-- extra_lib
-
 |   |-- include
-
 |   |   |-- max.hpp
-
 |   |   |-- meson.build
-
 |   |   |-- min.hpp
-
 |   |-- meson.build
-
 |   |-- src
-
 |       |-- max.cpp
-
 |       |-- meson.build
-
 |       |-- min.cpp
-
 |-- main.cpp
-
 |-- pkg-config_files.md
 ```
 
